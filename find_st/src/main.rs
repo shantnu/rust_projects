@@ -6,10 +6,7 @@ fn search_sub_dir(local_path: &std::fs::DirEntry, string_to_find: &String,  v: &
 
     for subd in subdir {
         let subd_path = subd.unwrap();
-        //println!("{}", subd_path.path().display()); //fix
-        //println!("{}", subd_path.path().display().to_string().to_lowercase()); //fix
         let abc = subd_path.file_name();
-        //println!("File name was {:?}", abc.clone().into_string().unwrap().to_lowercase() );
 
         // clone needed-- why? ownership moved? check why.
         // also, why unwrap needed in left side? I think to convert from <result> to string by forcing it to get success case,
@@ -32,29 +29,26 @@ fn find_st(string_to_find: String) -> Vec<String> {
     for f in files {
         // have to copy to take ownership
         let local_path = f.expect("failed to open file");
-        let abc = local_path.file_name();
-        //println!("File name was {:?}", abc.clone().into_string().unwrap().to_lowercase() );
 
-        // clone needed-- why? ownership moved? check why.
-        // also, why unwrap needed in left side? I think to convert from <result> to string by forcing it to get success case,
-        //igrnoing <Error>
-        if abc.into_string().unwrap().to_lowercase() == string_to_find.clone() {
-            v.push(local_path.path().display().to_string());
-            println!("{}", local_path.path().display().to_string());
-
-
-        }
 
         if local_path.path().is_dir() {
             //println!("{} is a direcrtory!", local_path.path().display());
             search_sub_dir(&local_path, &string_to_find, &mut v);
 
 
-        } else {
-            //println!("{} NOT  a direcrtory!", local_path.path().display());
         }
+        else {
+            let abc = local_path.file_name();
+            // clone needed-- why? ownership moved? check why.
+            // also, why unwrap needed in left side? I think to convert from <result> to string by forcing it to get success case,
+            //igrnoing <Error>
+            if abc.into_string().unwrap().to_lowercase() == string_to_find.clone() {
+                v.push(local_path.path().display().to_string());
+                println!("{}", local_path.path().display().to_string());
 
-        // println!("{}", f.expect("failed to open file").path().display());
+
+            }
+        }
     }
 
     // just v! explain
